@@ -1,5 +1,11 @@
 # Javaweb
 
+1、前端基础知识
+
+前后端分离开发
+
+![web流程](D:\java codes\javaweb\笔记图片\web流程.jpg)
+
 1、web前端
 
 web标准，网页标准
@@ -15,3 +21,17 @@ HTML:超文本语言
 标记语言：标签预定义好的
 
 CSS：层叠样式表
+
+html快速入门
+
+<html>
+
+	<head>
+		<title>HTML快速入门</title>
+	</head>
+​	<body>
+		<h1>Hello HTML</h1>
+
+​	</body>
+
+</html>
