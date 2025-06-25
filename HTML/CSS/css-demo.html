@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!--注意：CSS引入优先级
+行内样式>内部样式（外部样式）谁后加载谁的优先级高-->
+<!--内部样式-->
+<style>
+    h1{
+        color: blue;
+    }
+</style>
+<!--外部样式-->
+<link rel="stylesheet" href="demo.css">
+<body>
+    <!--CS引入方式-->
+    <!--行内样式-->
+    <h1 style="color: red;">Hello CSS..1</h1>
+
+    <h1>Hello CSS..2</h1>
+    <h1>Hello CSS..3</h1>
+    <h1>Hello CSS..4</h1>
+    <h1>Hello CSS..5</h1>
+</body>
+</html>
