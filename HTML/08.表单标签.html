@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表单标签</title>
+</head>
+<body>
+    <!-- 表单标签 form
+        action属性：定义提交数据的路径，不写默认提交到当前路径
+        method属性：定义表单提交方式
+            get:请求数据直接拼接在路径后面 ？username=zs&zge=18 数据大小有限制
+            post:请求数据通过请求体传递 username=lisi&age=19  数据大小无限制
+            注意：如果要提交数据，必须添加name属性
+            -->
+    <form action="" method="get">
+        姓名：<input type="text" name="username">
+        年龄：<input type="text" name="age">
+        <input type="submit" value="get提交数据">
+    </form>
+    
+    <br>
+    <form action="" method="post">
+        姓名：<input type="text" name="username">
+        年龄：<input type="text" name="age">
+        <input type="submit" value="post提交数据">
+    </form>
+</body>
+</html>
