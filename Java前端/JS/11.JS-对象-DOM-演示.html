@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-对象-DOM演示</title>
+    <style>
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            text-align: center;
+            margin: auto;
+            line-height: 40px;
+        }
+        th,td {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="font-size: 30px; text-align: center;" id="tb1">课程表</div>
+
+    <table>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>分数</th>
+            <th>评语</th>
+        </tr>
+        <tr class="data">
+            <td>001</td>
+            <td>张三</td>
+            <td>90</td>
+            <td>很优秀</td>
+        </tr>
+        <tr class="data">
+            <td>002</td>
+            <td>李四</td>
+            <td>92</td>
+            <td>优秀</td>
+        </tr>
+        <tr class="data">
+            <td>003</td>
+            <td>王五</td>
+            <td>83</td>
+            <td>很努力,不错</td>
+        </tr>
+        <tr class="data">
+            <td>004</td>
+            <td>赵六</td>
+            <td>98</td>
+            <td>666</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <div style="text-align: center;">
+        <input id="b1" type="button" value="改变标题内容">
+        <input id="b2" type="button" value="改变标题颜色">
+        <input id="b3" type="button" value="删除最后一个">
+    </div>
+
+
+    <script>
+        document.querySelector('#b1').addEventListener('click', () => {
+            document.querySelector('#tb1').innerHTML = "学员成绩表";
+        })
+
+        document.querySelector('#b2').addEventListener('click', () => {
+            document.querySelector('#tb1').style = "font-size: 30px; text-align: center; color: red;"
+        })
+
+        document.querySelector('#b3').addEventListener('click', () => {
+            let trs = document.querySelectorAll('.data');
+            trs[trs.length - 1].remove();
+        })
+    </script>
+</body>
+
+</html>

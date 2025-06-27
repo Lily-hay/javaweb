@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-对象-JSON</title>
+</head>
+
+<body>
+
+
+    <script>
+        //1. 自定义JS对象 
+        let jsonStr='{"name":"TOM","age":18,"address":["深圳","广州","东莞"]}';
+
+        //2. JSON对象 json格式特点：所有key必须加双引号
+        //json字符串——> json对象
+        let jsObj=JSON.parse(jsonStr);
+        console.log(jsObj.name+":"+jsObj.age);
+        
+        //json对象——> json字符串
+        let jsonStr2=JSON.stringify(jsObj);
+        console.log(jsonStr2);
+        
+    </script>
+</body>
+
+</html>

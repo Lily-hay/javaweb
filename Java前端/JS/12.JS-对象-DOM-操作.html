@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-对象-DOM</title>
+</head>
+
+<body>
+    <span id="sid">DOM元素1</span><br>
+    <span class="txt">DOM元素2</span><br>
+    <span class="txt">DOM元素3</span><br>
+
+    <script>
+        //DOM 文档对象模型
+    //通过document对象获取元素对象
+    //1.通过css选择器获取单个元素对象 --如果存在多个，只返回第一个
+    let s1=document.querySelector("#sid");
+    //alert(s1);
+    //alert(s1.innerHTML);
+    s1.innerHTML='Hello DOM';
+    
+    //2.通过css选择器获取所有对象
+    let s2=document.querySelectorAll('.txt');
+    alert(s2);
+    s2.forEach((s)=>{
+        s.innerHTML='Hello DOM';
+    })
+
+
+    </script>
+</body>
+
+</html>

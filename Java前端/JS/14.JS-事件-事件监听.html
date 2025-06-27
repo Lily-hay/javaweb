@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-事件监听</title>
+</head>
+
+<body>
+    <input type="button" id="btn1" value="点我一下试试1">
+    <input type="button" id="btn2" value="点我一下试试2">
+
+    <script>
+    //1.事件监听【推荐】可以绑定多个
+    document.querySelector("#btn1").addEventListener('click',function()
+{
+    alert('试试就试试');
+})
+   document.querySelector("#btn1").addEventListener('click',function()
+{
+    alert('试试就试试1111');
+})
+
+    //2.事件监听 (早期版本) --调用事件属性 
+    document.querySelector("#btn2").onclick=()=>
+    {
+        alert("试试就试试2");
+
+    }
+     document.querySelector("#btn2").onclick=()=>
+    {
+        alert("试试就试试2222222");
+
+    }
+    </script>
+</body>
+
+</html>

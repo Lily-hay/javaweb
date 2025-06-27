@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-案例-隔行换色</title>
+    <style>
+        table {
+            /* 设置表格的宽度 */
+            width: 60%;
+            /* 将表格边框合并，消除单元格之间的间距 */
+            border-collapse: collapse;
+            /* 将表格边框间的距离设置为0，确保没有任何间距 */
+            border-spacing: 0;
+            /* 文本居中对齐 */
+            text-align: center;
+            /* 版心居中展示 */
+            margin: auto;
+            /* 距离顶部的外边距 */
+            margin-top: 20px;
+            /* 行高 */
+            line-height: 30px;
+            /* 字体 */
+            font-family: 'Courier New', 华文中宋, monospace;
+        }
+
+        table,
+        tr,
+        th,
+        td {
+            /* 设置表格的边框 */
+            border: 1px solid black;
+        }
+
+        h1 {
+            /* 文本居中对齐 */
+            text-align: center;
+        }
+
+        .footer_btn {
+            /* 文本居中对齐 */
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="title">用户信息表</h1>
+
+    <table>
+        <tr>
+            <th>编号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>爱好</th>
+        </tr>
+        <tr class="data">
+            <td>1</td>
+            <td>Tom</td>
+            <td>18</td>
+            <td>男</td>
+            <td>Java , JS , HTML , Vue</td>
+        </tr>
+        <tr class="data">
+            <td>2</td>
+            <td>Cat</td>
+            <td>12</td>
+            <td>女</td>
+            <td>Java , JS , HTML , Vue</td>
+        </tr>
+        <tr class="data">
+            <td>3</td>
+            <td>Lee</td>
+            <td>21</td>
+            <td>男</td>
+            <td>Java , Vue</td>
+        </tr>
+        <tr class="data">
+            <td>4</td>
+            <td>Jerry</td>
+            <td>19</td>
+            <td>女</td>
+            <td>JS , HTML , Vue</td>
+        </tr>
+        <tr class="data">
+            <td>5</td>
+            <td>Jack</td>
+            <td>25</td>
+            <td>男</td>
+            <td>Java</td>
+        </tr>
+        <tr class="data">
+            <td>6</td>
+            <td>Jones</td>
+            <td>22</td>
+            <td>女</td>
+            <td>HTML , Vue</td>
+        </tr>
+    </table>
+
+    <script>
+        //需求：实现表格换色效果 事件：鼠标移入移出，DOM操作，添加样式
+        //1.获取dom元素
+        let trs=document.querySelectorAll(".data");
+        for(let i=0;i<trs.length;i++)
+    {
+        //鼠标移入事件
+        trs[i].addEventListener('mouseenter',()=>{
+            if(i%2==0)
+        {
+            trs[i].style="background-color:#FBFBD4";
+        }
+        else{
+            trs[i].style="background-color:#D9D9FA";
+        }
+        })
+        //鼠标移出事件
+         trs[i].addEventListener('mouseleave',()=>{
+            trs[i].style="background-color:#FFF";
+         })
+    }
+
+    </script>
+</body>
+
+</html>

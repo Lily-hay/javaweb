@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-对象-String</title>
+</head>
+
+<body>
+
+
+    <script>
+        //1. 创建字符串
+        //let str=new string("Hello world!");
+        let str='Hello world!';
+
+        //2. 字符串属性 - length
+        console.log(str.length);
+        
+        //3. 字符串方法 - charAt , indexOf , trim , substring
+         //3-1 chatAt 获取指定索引的字符
+         console.log(str.charAt(2));
+        
+         //indexof 返回字符串索引
+         console.log(str.indexOf('llo'));
+
+         //trim 去除两边的空格
+         let str1='  Hello World!  ';
+         console.log(str1);
+         console.log(str1.trim());
+        
+         //substring 截取指定位置的字符串 包左不包右
+         console.log(str.substring(2,5));
+         
+         
+         
+    </script>
+</body>
+
+</html>

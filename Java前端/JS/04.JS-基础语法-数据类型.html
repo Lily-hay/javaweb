@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-数据类型</title>
+</head>
+
+<body>
+    <script>
+
+        //原始数据类型
+        alert(typeof 3);//number
+        alert(typeof 3.14);//number
+
+        alert(typeof "A");//String
+        alert(typeof 'Hello');//String
+        alert(typeof `Hello JS`);//String 反引号
+
+        alert(typeof true);//boolean
+        alert(typeof false);//boolean
+
+        alert(typeof null);//object
+
+        let a;
+        alert(typeof a);//undefined
+
+        //反引号应用场景 拼接字符串
+        let name='张三';
+        let age=18;
+        //console.log("我是"+name+",我今年"+age+"岁了");
+        console.log(`我是${name} ，我今年${age} 岁了`);
+        
+        
+
+    </script>
+</body>
+
+</html>
