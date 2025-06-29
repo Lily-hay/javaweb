@@ -8,8 +8,8 @@
 <body>
   
   <div id="app">
-    <input type="button" value="点我一下试试">
-    <input type="button" value="再点我一下试试">
+    <input type="button" value="点我一下试试" v-on:click="handle()">
+    <input type="button" value="再点我一下试试" @click="handle"> <!-- 简写方式 @-->
   </div>
   
   <script type="module">
@@ -19,7 +19,15 @@
         return {
           name: 'Vue'
         }
+      },
+      methods:
+      {//写绑定事件的方法
+        handle()
+        {
+          alert("你点了我一下..")
+        }
       }
+      
     }).mount('#app')
   </script>
 </body>

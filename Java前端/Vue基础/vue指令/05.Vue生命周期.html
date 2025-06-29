@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+    <input type="button" value="点我一下试试">
+    <input type="button" value="再点我一下试试"> <!-- 简写方式 @-->
+  </div>
+    <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    createApp({
+      data(){
+        return {
+          
+        }
+      },
+      //方法区
+      methods:{
+
+      },
+      //钩子函数(生命周期方法)，分8个阶段
+      created()
+      {
+        console.log('创建完成');
+        
+      },
+      mounted()
+      {
+        console.log('页面挂钩完成')
+      }
+    
+    }).mount('#app')
+  </script>
+</body>
+</html>

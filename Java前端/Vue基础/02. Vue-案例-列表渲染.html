@@ -58,9 +58,8 @@
         <option value="3">其他</option>
       </select>
 
-      <input class="btn" type="button" value="查询">
+      <input class="btn" type="button" value="查询" @click="search()">  <!-- 绑定点击事件 -->
     </div>
-    {{name}}
     <table>
       <tr>
         <th>序号</th>
@@ -93,7 +92,7 @@
       </tr>
     </table>
   </div>
-
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script type="module">
     import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 
@@ -103,46 +102,34 @@
           name:'',
           gender:'',
           job:'',
-          userList: [
-            {
-              "id": 1,
-              "name": "谢逊",
-              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/1.jpg",
-              "gender": 1,
-              "job": 1,
-              "entrydate": "2023-06-09",
-              "updatetime": "2023-07-01 00:00:00"
-            },
-            {
-              "id": 2,
-              "name": "韦一笑",
-              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/2.jpg",
-              "gender": 1,
-              "job": 1,
-              "entrydate": "2023-06-09",
-              "updatetime": "2023-07-01 00:00:00"
-            },
-            {
-              "id": 3,
-              "name": "黛绮丝",
-              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/3.jpg",
-              "gender": 2,
-              "job": 2,
-              "entrydate": "2023-06-09",
-              "updatetime": "2023-07-01 00:00:00"
-            },
-            {
-              "id": 4,
-              "name": "殷天正",
-              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/4.jpg",
-              "gender": 1,
-              "job": 3,
-              "entrydate": "2023-06-09",
-              "updatetime": "2023-07-01 00:00:00"
-            }
-          ]
+          userList: []
         }
       },
+      methods:
+      {
+        search()
+        {
+          //输出搜索框中的数据
+          console.log(`姓名：${this.name},性别：${this.gender},职位:${this.job}`);
+          //通过axios发送异步请求，动态获取数据
+          axios.get(`https://web-server.itheima.net/emps/list?name=${this.name}&gender=${this.gender}&job=${this.job}`).then((result)=>
+        {
+          console.log(result.data.data);
+          this.userList=result.data.data;
+        }).catch(()=>
+      {
+
+      })
+          
+        }
+        
+      },
+      //钩子函数
+      mounted()
+      {
+        //页面一旦加载完成，就进行数据查询
+        this.search();
+      }
     }).mount("#app");
   </script>
 </body>
