@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3-案例1</title>
+  <style>
+    table,th,td {
+      border: 1px solid #000;
+      border-collapse: collapse;
+      line-height: 50px;
+      text-align: center;
+    }
+
+    #center,table {
+      width: 60%;
+      margin: auto;
+    }
+
+    #center {
+      margin-bottom: 20px;
+    }
+
+    img {
+      width: 50px;
+    }
+
+    input,select {
+      width: 17%;
+      padding: 10px;
+      margin-right: 30px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="center">
+      <!-- v-model 双向绑定 -->
+      姓名: <input type="text" name="name" v-model="name">
+      性别:
+      <select name="gender" v-model="gender">
+        <option value="1">男</option>
+        <option value="2">女</option>
+      </select>
+      职位:
+      <select name="job" v-model="job">
+        <option value="1">讲师</option>
+        <option value="2">班主任</option>
+        <option value="3">其他</option>
+      </select>
+
+      <input class="btn" type="button" value="查询">
+    </div>
+    {{name}}
+    <table>
+      <tr>
+        <th>序号</th>
+        <th>姓名</th>
+        <th>头像</th>
+        <th>性别</th>
+        <th>职位</th>
+        <th>入职时间</th>
+        <th>更新时间</th>
+      </tr>
+
+      <tr v-for="(user,index) in userList":key="user.id"><!-- key 可增加渲染速度 -->
+        <td>{{index+1}}</td>
+        <td>{{user.name}}</td>
+        <td><img :src="user.image"></td><!-- 引号里不能用插值表达式 用v-bind -->
+        <!-- v-if 条件渲染 基于条件判断来控制创建或移除元素节点 -->
+        <td>
+          <span v-if="user.gender==1">男</span>
+          <span v-else-if="user.gender==2">女</span>
+          <span v-else>妖</span>
+        </td>
+        <!-- v-show 基于CSS样式diaplay来控制显示和隐藏，所有标签都创建出来了 适合频繁切换的场景-->
+        <td>
+          <span v-show="user.job==1">班主任</span>
+          <span v-show="user.job==2">讲师</span>
+          <span v-show="user.job!=1 && user.job!=2">其他</span>
+        </td>
+        <td>{{user.entrydate}}</td>
+        <td>{{user.updatetime}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    createApp({
+      data() {
+        return {
+          name:'',
+          gender:'',
+          job:'',
+          userList: [
+            {
+              "id": 1,
+              "name": "谢逊",
+              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/1.jpg",
+              "gender": 1,
+              "job": 1,
+              "entrydate": "2023-06-09",
+              "updatetime": "2023-07-01 00:00:00"
+            },
+            {
+              "id": 2,
+              "name": "韦一笑",
+              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/2.jpg",
+              "gender": 1,
+              "job": 1,
+              "entrydate": "2023-06-09",
+              "updatetime": "2023-07-01 00:00:00"
+            },
+            {
+              "id": 3,
+              "name": "黛绮丝",
+              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/3.jpg",
+              "gender": 2,
+              "job": 2,
+              "entrydate": "2023-06-09",
+              "updatetime": "2023-07-01 00:00:00"
+            },
+            {
+              "id": 4,
+              "name": "殷天正",
+              "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2023/4.jpg",
+              "gender": 1,
+              "job": 3,
+              "entrydate": "2023-06-09",
+              "updatetime": "2023-07-01 00:00:00"
+            }
+          ]
+        }
+      },
+    }).mount("#app");
+  </script>
+</body>
+
+</html>

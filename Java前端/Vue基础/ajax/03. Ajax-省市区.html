@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue3-案例1</title>
+    <style>
+      #center {
+        margin-bottom: 20px;
+      }
+
+      input,
+      select {
+        width: 17%;
+        padding: 10px;
+        margin-right: 30px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="center">
+        省:
+        <select v-model="province">
+          <option v-for="p in provinces" :key="p.id" :value="p.id">{{p.name}}</option>
+        </select>
+        市:
+        <select v-model="city">
+          <option v-for="c in cities" :key="c.id" :value="c.id">{{c.name}}</option>
+        </select>
+        区:
+        <select v-model="area">
+          <option v-for="a in areas" :key="a.id" :value="a.id">{{a.name}}</option>
+        </select>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module">
+      import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+      createApp({
+        data() {
+          return {
+            province: '',
+            city: '',
+            area: '',
+
+            provinces: [],
+            cities: [],
+            areas: [],
+          };
+        },
+        methods: {
+          
+        },
+        mounted() {
+          
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>

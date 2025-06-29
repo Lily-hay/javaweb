@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v-bind入门</title>
+</head>
+<body>
+  
+  <div id="app">
+    <a : href="image">链接1</a>
+    <br><br>
+    <a : href="image">链接2</a>
+  </div>
+  
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    createApp({
+      data(){
+        return {
+          image : "https://www.4399.com"
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>
