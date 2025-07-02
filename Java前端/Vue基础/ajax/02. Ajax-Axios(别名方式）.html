@@ -16,7 +16,7 @@
     <script>
         document.querySelector("#btnGet").addEventListener('click',()=>
     {
-        axios.get('url').then((result)=>{
+        axios.get('https://mock.apifox.cn/m1/3083103-0-default/emps/list').then((result)=>{
             console.log(result.data);
         }).catch((err)=>{
             alert(err);
@@ -25,7 +25,7 @@
     
        document.querySelector("#btnPost").addEventListener('click',()=>
     {
-        axios.post('','id=1').then((result)=>{ //成功回调参数
+        axios.post('https://mock.apifox.cn/m1/3083103-0-default/emps/update','id=1').then((result)=>{ //成功回调参数
             console.log(result.data);
         }).catch((err)=>{//失败回调参数
             alert(err);

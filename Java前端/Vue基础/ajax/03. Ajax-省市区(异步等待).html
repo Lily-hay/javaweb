@@ -55,7 +55,7 @@
           };
         },
         methods: {
-        search()
+        /* search()
         {
           //获取省份信息
           axios.get('https://web-server.itheima.net/province').then((result)=>
@@ -75,8 +75,29 @@
       }) 
       })
         })
+        } */
+
+        //async声明异步等待，await只在async内有效，await取代then，等待获取到请求成功的返回值
+       async search()
+        {
+          const presult=await axios.get('https://web-server.itheima.net/province');
+          this.provinces=presult.data.data;
+          this.province=this.provinces[0].id;
+
+          const cresult=await axios.get(`https://web-server.itheima.net/city?pid=${this.province}`);
+          this.cities=cresult.data.data;
+          this.city=this.cities[0].id;
+
+          const aresult=await axios.get(`https://web-server.itheima.net/area?cid=${this.city}`);
+          this.areas=aresult.data.data;
+          this.area=this.areas[0].id;
+
+          
+
         }
+
       },
+
         mounted() {
           this.search();
         },
