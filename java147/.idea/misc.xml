@@ -11,7 +11,16 @@
         <option value="$PROJECT_DIR$/maven-projectC/pom.xml" />
         <option value="$PROJECT_DIR$/day04-code/pom.xml" />
         <option value="$PROJECT_DIR$/servlet-deno/pom.xml" />
+        <option value="$PROJECT_DIR$/springboot-web-quickstart01/pom.xml" />
+        <option value="$PROJECT_DIR$/springboot-web-quickstart02/pom.xml" />
+        <option value="$PROJECT_DIR$/day05-code/pom.xml" />
+        <option value="$PROJECT_DIR$/tlias-web-manager/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/day05-code/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
