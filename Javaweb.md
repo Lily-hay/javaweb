@@ -211,7 +211,7 @@ Maven的packege可以将项目打包成jar包，install将包打入repo
 
 实战案例一：
 
-1、开发规范
+#### 1、开发规范
 
 功能接口文档：请求路径、请求方式、请求参数、响应数据
 
@@ -226,7 +226,7 @@ REST风格
 | http://localhost:8080/users   | POST     | 新增用户        |                                                   |
 | http://localhost:8080/users   | PUT      | 修改用户        |                                                   |
 
-2、环境准备
+#### 2、环境准备
 
 测试工具apifox
 
@@ -258,10 +258,54 @@ public class DeptController {
 }
 ```
 
-返回的集合会自动转为json格式，因为注解@RestController=@Contraoller+ResponseBody,ResponseBody将集合/实体对象转换为json格式，用在类上、方法上
+返回的集合会自动转为json格式，因为注解@RestController=@Contraoller+ResponseBody,**ResponseBody将集合/实体对象转换为json格式，用在类上、方法上**
 
 
 
 统一响应结果
 
 code,msg,data (成功失败、错误信息、响应数据)
+
+
+
+前端环境：Nginx   端口：localhost:90
+
+反向代理，前端的地址不同于后端服务器
+
+好处：安全、灵活、负载均衡（比较平均分配每台服务器的访问量）
+
+
+
+#### 3、分层解耦：提高复用性
+
+三层架构：单一职责原则
+
+控制层：接收请求、响应数据（Controller）
+
+业务逻辑层： 逻辑数据（Service）
+
+数据访问层：数据访问（Dao）
+
+为了增添不同业务而不改变已写代码，各自新增一个接口
+
+**Springboot自带解耦方法，对象不再自己new，而是提前将对象交由容器，需要的时候直接从容器取**
+
+**控制反转**：IOC，对象的创建控制权由程序自身转移到外部（容器）加注解@Component
+
+**依赖注入**：DI，容器为应用程序提供运行时，所依赖的资源              加注解@Autowired
+
+Bean对象：IOC容器中创建、管理的对象  
+
+声明beans的注解：@Controller,@Service,@Repository,@Component
+
+其中，在服务层上，可用@Service代替@Component，在数据层用@Repository代替@Component，但在Controller层，不能用@Component代替@ResController
+
+依赖注入的注解：@Autowired 默认按照类型自动装配
+
+如果同时存在多个bean对象：@Primary（在需要的bean类上使用）@Resource(name="deptServicelmpl")
+
+@Qualifier(value = "service2")+@Autowired经我使用出错
+
+加了注解不一定起效，要经过启动类里的注解扫描到，启动类默认扫描当前包以及子包
+
+实现的效果：高内聚低耦合

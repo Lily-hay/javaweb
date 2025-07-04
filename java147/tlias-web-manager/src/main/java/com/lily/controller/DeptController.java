@@ -1,25 +1,28 @@
 package com.lily.controller;
 
+import com.lily.Service.DeptServicelmpl;
 import com.lily.entity.Dept;
 import com.lily.entity.Result;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class DeptController {
     //@RequestMapping(value = "/depts",method = RequestMethod.GET)
+    //private DeptServicelmpl deptService = new DeptServicelmpl();
+    @Resource(name="deptServicelmpl")
+    //@Qualifier(value = "service2")
+   // @Autowired
+    private DeptServicelmpl deptService;
     @GetMapping("/depts")
     public Result getAll() throws Exception {
-        //1.加载dept.txt数据并读取
+        /*//1.加载dept.txt数据并读取
         BufferedReader bufferedReader = new BufferedReader(new FileReader("D:\\java codes\\javaweb\\java147\\tlias-web-manager\\src\\main\\resources\\dept.txt"));
 
         ArrayList<Dept> depts = new ArrayList<>();
@@ -32,8 +35,10 @@ public class DeptController {
             LocalDateTime time = LocalDateTime.parse(parts[2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             depts.add(new Dept(id, name, time));
 
-            //3.响应数据
-        }
+        }*/
+        //3.响应数据
+        List<Dept> depts=deptService.listDept();
+
         return Result.success(depts);
     }
 }
