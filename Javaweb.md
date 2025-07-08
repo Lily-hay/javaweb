@@ -577,5 +577,75 @@ JDBC：操作关系型数据库的API，即接口
 
 各个数据厂商实现这套接口，提供数据库驱动jar包
 
+先引入MySQL依赖
+
+```
+//1、准备工作
+//注册驱动
+Class.forName("com.mysql.cj.jdbc.Driver");
+//获取连接对象
+Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/java147_db02","root","13145");
+//获取执行对象
+Statement statement = connection.createStatement();
+//2、执行SQL语句
+int i = statement.executeUpdate("update user set password='12345678'where id=1");
+System.out.println("i=="+i);
+//3、释放资源
+statement.close();
+connection.close();
+```
+
+注册驱动可以省略，因为**SPI（在驱动包的META-INF目录下的配置文件中配置了驱动类发全类名）**
+
+Statement执行DML,DQL语句
+
+executeUpdate(sql):执行DML语句，返回值为int，代表被影响的行数
+
+executeQuery(sql):执行DQL语句，返回值为ResultSet,封装了查询结果集
+
+参数化测试
+
+```
+@ParameterizedTest
+    @CsvSource(value={"xiaoqiao,123456","zhangsan,123456"})
+    public void testSearch(String uname,String pwd) throws Exception {
+        //1、准备工作
+        //注册驱动
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        //获取连接对象
+        Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/java147_db02","root","13145");
+        //获取执行对象
+        Statement statement = connection.createStatement();
+        //2、执行SQL语句
+        ResultSet resultSet = statement.executeQuery("select * from user where username='"+uname+"' and password='"+pwd+"'");
+        while (resultSet.next()) {  //resultSet.next()可遍历
+            int id = resultSet.getInt("id");
+            String username = resultSet.getString("username");
+            String password = resultSet.getString("password");
+            String name=resultSet.getString("name");
+            int  age = resultSet.getInt("age");
+            User user = new User(id,username,password,name,age);
+            System.out.println(user);
+        }
+
+        //3、释放资源
+        statement.close();
+        connection.close();
+    }
+}
+```
 
 
+
+SQL注入：**通过控制输入端来修改事先定义好的SQL语句，以达到执行代码对服务器进行攻击的方法**
+
+PreparedStatement:预编译SQL语句并执行，可以防止SQL注入问题
+
+```
+PreparedStatement ps = connection.prepareStatement("select * from user where username=? and password=?");
+//设置参数       ?表示占位符，参数传入后会做转义，看作了一个整体
+ps.setString(1,uname);
+ps.setString(2,pwd);
+//2、执行SQL语句
+ResultSet resultSet = ps.executeQuery();
+```
