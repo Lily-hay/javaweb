@@ -37,7 +37,7 @@ public class DeptController {
 
         }*/
         //3.响应数据
-        List<Dept> depts=deptService.listDept();
+        List<Dept> depts=deptService.list();
 
         return Result.success(depts);
     }

@@ -353,7 +353,9 @@ SQL分类
 
 ![image-20250705143659789](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250705143659789.png)
 
-#### 1、DDL
+#### 1、数据库基础
+
+##### 1、DDL
 
 **--** **查询所有数据库**
 
@@ -439,7 +441,7 @@ mysql数据类型
 
 
 
-#### 2、DML
+##### 2、DML
 
 新增数据
 
@@ -473,7 +475,7 @@ delete from 表名 [where 条件];
 
 
 
-#### 3、DQL
+##### 3、DQL
 
 1、基础查询
 
@@ -571,9 +573,11 @@ select * from emp limit 5,5;
 
 
 
-#### 4、Java程序操作数据库
+#### 2、Java程序操作数据库
 
-JDBC：操作关系型数据库的API，即接口
+##### 1、JDBC（硬编码、繁琐、资源浪费、性能降低）
+
+：操作关系型数据库的API，即接口
 
 各个数据厂商实现这套接口，提供数据库驱动jar包
 
@@ -639,7 +643,7 @@ executeQuery(sql):执行DQL语句，返回值为ResultSet,封装了查询结果�
 
 SQL注入：**通过控制输入端来修改事先定义好的SQL语句，以达到执行代码对服务器进行攻击的方法**
 
-PreparedStatement:预编译SQL语句并执行，可以防止SQL注入问题
+PreparedStatement:**预编译SQL语句并执行，可以防止SQL注入问题；性能还更好**
 
 ```
 PreparedStatement ps = connection.prepareStatement("select * from user where username=? and password=?");
@@ -648,4 +652,136 @@ ps.setString(1,uname);
 ps.setString(2,pwd);
 //2、执行SQL语句
 ResultSet resultSet = ps.executeQuery();
+```
+
+
+
+##### 2、MyBatis
+
+对JDBC进行优化，更简洁，性能更好
+
+步骤：
+
+准备工作
+
+1、创建Springboot工程，引入Mybatis相关依赖
+
+2、准备数据库表，实体类
+
+3、配置Mybatis(在application.prpperities中配置数据库信息)
+
+```
+spring.application.name=springboot-mybatis-quickstart
+spring.datasource.url=jdbc:mysql://localhost:3306/java147_db02
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=13145
+#mybatis配置，将sql语句显示在控制台,日志
+mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+```
+
+编写Mybatis程序：编写持久层接口
+
+```
+@Mapper//作用，程序启动时，会自动生成该接口的代理对象，交由IOC容器管理
+public interface UserMapper {
+    @Select("select * from user")
+    public List<User> list();
+}
+```
+
+测试
+
+```
+@SpringBootTest//会加载SpringBoot环境
+public class UserMapperTest {
+    @Autowired//依赖注入
+    private UserMapper userMapper;
+    @Test
+    public void testList()
+    {
+        List<User> list = userMapper.list();
+        for (User user : list) {
+            System.out.println(user);
+        }
+    }
+}
+```
+
+**数据库连接池**
+
+负责分配、管理数据库连接
+
+允许重复使用一个现有的数据库连接，而不是重现建立一个
+
+释放空闲时间超过最大空闲时间的连接，来避免因为没有释放而引起的数据库遗漏
+
+优势：资源重用、提升系统响应度、避免数据连接遗漏
+
+springboot默认Hikari
+
+Druid(德鲁伊) 阿里提供
+
+
+
+XML映射配置
+
+Mybatis中，可以通过注释配置SQL语句，也可以通过XML配置SQL
+
+规则：
+
+1、放于resources下的XML映射文件名称与Mapper接口名称一致，放置的包的目录结构也要一致
+
+2、XML映射文件的namespace属性为Mapper接口的全限定名一致
+
+3、XML映射文件的sql语句中的id与mapper接口中的方法名一致，并且保持返回类型一致
+
+```
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lily.mapper.UserMapper">
+    <select id="list" resultType="com.lily.entity.User">
+        select * from user
+    </select>
+</mapper>
+```
+
+用MyBatisX插件加速开发
+
+
+
+若不同包，需要配置XML文件映射路径
+
+```
+#配置xml与mapper接口的映射路径
+mybatis.mapper-locations=classpath:mapper/*.xml //会扫描该类下所有.xml文件
+```
+
+数据封装(当表里的名字与实体类的名字不同时，不会自动封装，值为null)
+
+```
+//数据封装
+//1.手动结果映射
+/*@Results
+        ({
+                @Result(column="create_time",property = "createTime"),
+                @Result(column="update_time",property = "updateTime"),
+
+        }
+        )*/
+//2.数据封装2，起别名
+//@Select("select id,name,create_time createTime,update_time updateTime from dept")
+
+//数据封装方式3 全局配置，开启驼峰命名规则映射
+@Select("select * from dept")
+public List<Dept> list();
+```
+
+配置文件
+
+```
+mybatis.configuration.map-underscore-to-camel-case=true
 ```

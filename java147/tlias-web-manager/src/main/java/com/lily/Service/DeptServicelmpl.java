@@ -2,6 +2,7 @@ package com.lily.Service;
 
 import com.lily.Dao.DeptDaolmpl;
 import com.lily.entity.Dept;
+import com.lily.mapper.DeptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -14,18 +15,9 @@ import java.util.List;
 @Service
 public class DeptServicelmpl implements DeptService {
     @Autowired
-    private DeptDaolmpl deptDao;
-    //DeptDaolmpl deptDao = new DeptDaolmpl();
-    public List<Dept> listDept() throws Exception {
-        List<Dept> depts = new ArrayList<>();
-       List<String> strings= deptDao.daolmpl();
-        for (String string : strings) {
-            String[] parts = string.split(",");
-            Integer id = Integer.valueOf(parts[0]);
-            String name = parts[1];
-            LocalDateTime time = LocalDateTime.parse(parts[2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            depts.add(new Dept(id, name, time));
-        }
-        return depts;
+    private DeptMapper deptMapper;
+    public List<Dept> list() {
+        return deptMapper.list();
     }
+
 }

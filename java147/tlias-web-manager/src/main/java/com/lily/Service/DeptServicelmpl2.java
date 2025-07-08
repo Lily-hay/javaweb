@@ -14,14 +14,14 @@ import java.util.List;
 
 //@Component
 //@Primary//指定该类优先级最高
-@Service("service2")
+/*@Service("service2")
 public class DeptServicelmpl2 implements DeptService {
 
     @Autowired
 
     private DeptDaolmpl deptDao;
     //DeptDaolmpl deptDao = new DeptDaolmpl();
-    public List<Dept> listDept() throws Exception {
+    public List<Dept> list() throws Exception {
         List<Dept> depts = new ArrayList<>();
        List<String> strings= deptDao.daolmpl();
         for (String string : strings) {
@@ -33,4 +33,4 @@ public class DeptServicelmpl2 implements DeptService {
         }
         return depts;
     }
-}
+}*/

@@ -8,13 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="JDBC-demo" />
         <module name="day04-code" />
+        <module name="springboot-mybatis-quickstart" />
       </profile>
       <profile name="Annotation profile for tlias-web-manager" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../../../repo/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="tlias-web-manager" />
       </profile>
@@ -33,6 +34,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="springboot-mybatis-quickstart" options="-parameters" />
       <module name="springboot-web-quickstart01" options="-parameters" />
       <module name="tlias-web-manager" options="-parameters" />
     </option>
