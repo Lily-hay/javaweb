@@ -1,10 +1,7 @@
 package com.lily.mapper;
 
 import com.lily.entity.Dept;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -25,4 +22,17 @@ public interface DeptMapper {
     //数据封装方式3 全局配置，开启驼峰命名规则映射
     @Select("select * from dept")
     public List<Dept> list();
+
+    @Delete("delete from dept where id=#{id}")
+    void delete(Integer id);
+
+    @Insert("insert into dept(name,create_time,update_time) values(#{name},#{createTime},#{updateTime})")
+    void save(Dept dept);
+
+    @Select("select * from dept where id=#{id}")
+    Dept getById(Integer id);
+
+    /*根据id修改数据*/
+    //@Update("update dept set name=#{name},update_time=#{updateTime} where id=#{id}")
+    void update(Dept dept);
 }

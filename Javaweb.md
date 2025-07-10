@@ -785,3 +785,101 @@ public List<Dept> list();
 ```
 mybatis.configuration.map-underscore-to-camel-case=true
 ```
+
+
+
+实现部门管理删除时的请求参数
+
+```
+//方式一：原始的HttpServletRequest对象获取请求参数
+/*@DeleteMapping("/depts")
+public Result delete(HttpServletRequest request) throws Exception {
+    String id = request.getParameter("id");
+    int idInt=Integer.parseInt(id);
+    System.out.println(idInt);
+    return Result.success();
+}*/
+
+//方式二：通过@RequestParam注解进行参数绑定，一旦加了RequestParam，默认required=true
+//则前端必须传入id参数，不传就会报错误400，bad request;将默认值改为false，则不需要
+/*@DeleteMapping("/depts")
+public Result delete(@RequestParam(value = "id",required = false) Integer deptId) throws Exception {
+    System.out.println(deptId);
+    return Result.success();
+}*/
+
+//方式三：保证请求参数名与形参变量名相同，直接接收（推荐）
+@DeleteMapping("/depts")
+public Result delete(Integer id) throws Exception {
+    System.out.println(id);
+    return Result.success();
+}
+```
+
+
+
+```
+@Delete("delete from dept where id=#{id}")
+void delete(Integer id);
+```
+
+| **符号** | **说明**                                                 | **场景**                   | **优缺点**            |
+| -------- | -------------------------------------------------------- | -------------------------- | --------------------- |
+| #{…}     | 执行时，会将#{…}替换为?，生成预编译SQL，并自动设置参数值 | 参数值传递                 | 安全、性能高 （推荐） |
+| ${…}     | 拼接SQL。直接将参数拼接在SQL语句中，存在SQL注入问题      | 表名、字段名动态设置时使用 | 不安全、性能低        |
+
+
+
+新增部门数据
+
+@RequestBody 注解用来接收json格式的数据
+
+```
+@PostMapping
+public Result save(@RequestBody Dept dept)  {
+    deptService.save(dept);
+    return Result.success();
+}
+```
+
+更新部门数据
+
+首先要实现参数回显，根据id查询数据，再进行更新
+
+```
+//@Pathvariable 获取请求参数路径
+@GetMapping("/{id}")
+public Result getById(@PathVariable("id") Integer id) {
+    Dept dept = deptService.getById(id);
+    return Result.success(dept);
+}
+```
+
+Controller层，更新
+
+```
+@PutMapping
+public Result update(@RequestBody Dept dept) {
+    deptService.update(dept);
+    return Result.success(dept);
+}
+```
+
+Servicec层，要更新更新时间
+
+```
+public void update(Dept dept) {
+    dept.setUpdateTime(LocalDateTime.now());
+    deptMapper.update(dept);
+}
+```
+
+```
+@Update("update dept set name=#{name},update_time=#{updateTime} where id=#{id}")
+void update(Dept dept);
+```
+
+
+
+动态SQL，修改部分数据，传值就更新，不传就不更新
+

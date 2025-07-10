@@ -64,6 +64,7 @@ public class JDBCTest {
         //设置参数       ?表示占位符，参数传入后会做转义，看作了一个整体
         ps.setString(1,uname);
         ps.setString(2,pwd);
+
         //2、执行SQL语句
         ResultSet resultSet = ps.executeQuery();
         while (resultSet.next()) {

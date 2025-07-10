@@ -20,4 +20,28 @@ public class DeptServicelmpl implements DeptService {
         return deptMapper.list();
     }
 
+    @Override
+    public void delete(Integer id) {
+        deptMapper.delete(id);
+    }
+
+    @Override
+    public void save(Dept dept) {
+        dept.setCreateTime(LocalDateTime.now());
+        dept.setUpdateTime(LocalDateTime.now());
+        deptMapper.save(dept);
+    }
+
+    @Override
+    public Dept getById(Integer id) {
+        Dept dept=deptMapper.getById(id);
+        return dept;
+    }
+
+    @Override
+    public void update(Dept dept) {
+        dept.setUpdateTime(LocalDateTime.now());
+        deptMapper.update(dept);
+    }
+
 }
