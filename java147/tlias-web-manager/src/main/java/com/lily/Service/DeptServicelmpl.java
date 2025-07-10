@@ -40,7 +40,7 @@ public class DeptServicelmpl implements DeptService {
 
     @Override
     public void update(Dept dept) {
-        dept.setUpdateTime(LocalDateTime.now());
+        //dept.setUpdateTime(LocalDateTime.now());
         deptMapper.update(dept);
     }
 

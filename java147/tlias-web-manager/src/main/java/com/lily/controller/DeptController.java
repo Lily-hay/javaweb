@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("depts")
+@RequestMapping("/depts")
 @RestController
 public class DeptController {
     //@RequestMapping(value = "/depts",method = RequestMethod.GET)

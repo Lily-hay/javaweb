@@ -2,6 +2,7 @@ package com.lily.mapper;
 
 import com.lily.entity.Dept;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
