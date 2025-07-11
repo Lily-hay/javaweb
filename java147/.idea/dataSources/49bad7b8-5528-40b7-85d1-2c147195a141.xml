@@ -1035,52 +1035,5 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <table id="298" parent="293" name="dept">
-      <Comment>部门表</Comment>
-      <DetailsLevel>3</DetailsLevel>
-      <Engine>InnoDB</Engine>
-      <CollationName>utf8mb4_0900_ai_ci</CollationName>
-    </table>
-    <column id="299" parent="298" name="id">
-      <AutoIncrement>8</AutoIncrement>
-      <Comment>主键ID</Comment>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int unsigned|0s</StoredType>
-    </column>
-    <column id="300" parent="298" name="name">
-      <Comment>部门名称</Comment>
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>varchar(10)|0s</StoredType>
-    </column>
-    <column id="301" parent="298" name="create_time">
-      <Comment>创建时间</Comment>
-      <Position>3</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <column id="302" parent="298" name="update_time">
-      <Comment>修改时间</Comment>
-      <Position>4</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <index id="303" parent="298" name="PRIMARY">
-      <ColNames>id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="304" parent="298" name="name">
-      <ColNames>name</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <key id="305" parent="298" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <key id="306" parent="298" name="name">
-      <UnderlyingIndexName>name</UnderlyingIndexName>
-    </key>
   </database-model>
 </dataSource>

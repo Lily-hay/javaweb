@@ -925,3 +925,143 @@ void update(Dept dept);
 一对多：场景，部门与员工（一个部门下有多个员工）
 
 一对多的关系如何实现？ **在数据表中多的一方（子表）添加字段，来关联一（父表）的一方的主键**
+
+外键约束（作用，保证多表操作中数据的一致性、完整性问题）
+
+物理外键（frain_key）
+
+```
+alter table emp add constraint fk_emp_dept_id foreign key (dept_id) references dept(id);
+```
+
+缺点：1、影响增删改查的效率（需要检查外键关系） 2、仅用于单节点数据库，不适用于分布式、集群场景
+
+​	   3、容易引发数据的死锁问题，消耗性能
+
+选择逻辑外键（在业务逻辑中，解决外键问题，查询是否有关联，有则不删除）
+
+
+
+一对一：场景 用户与身份信息的关系
+
+实现：**在任意一方加入外键，关联另一方的主键，并且设置外键为唯一的**
+
+
+
+多对多：课程与学生的关系
+
+实现：**建立第三张中间表，中间表至少包含两个外键，分别关联两方的主键**
+
+
+
+多表查询：**消除无效的笛卡尔积**，加条件
+
+内连接：相当于查询A、B交集部分数据
+
+左外连接：查询左表所有数据(包括两张表交集部分数据)
+
+右外连接：查询右表所有数据(包括两张表交集部分数据)
+
+隐式内连接与显式内连接
+
+```
+-- A. 查询所有员工的ID, 姓名 , 及所属的部门名称 (隐式、显式内连接实现)
+-- 隐式内连接
+select emp.id,emp.name,dept.name from emp,dept where emp.dept_id=dept.id;
+-- 显式内连接
+select emp.id,emp.name,dept.name  from emp inner join dept on emp.dept_id = dept.id;
+select emp.id,emp.name,dept.name  from emp join dept on emp.dept_id = dept.id;
+```
+
+左外连接和右外连接
+
+on 后面的会看作一个整体，若有其它条件，还是要用where拼接
+
+```
+-- A. 查询员工表 所有 员工的姓名, 和对应的部门名称 (左外连接)
+select emp.name,d.name from emp left join dept d on emp.dept_id = d.id;
+
+-- B. 查询部门表 所有 部门的名称, 和对应的员工名称 (右外连接)
+select emp.name,dept.name from dept right join emp on emp.dept_id=dept.id;
+```
+
+子查询：SQL语句中嵌套select语句，称为嵌套查询，又称子查询。
+
+形式：select * from t1 where column1 = (select column1 from t2 …);
+
+```
+-- 标量子查询
+-- A. 查询 最早入职 的员工信息
+-- 1.查询最早的入职日期
+select min(entry_date) from emp ;
+-- 2.查询入职日期为'2000-01-01'的员工信息
+select * from emp where entry_date='2000-01-01';
+-- 3.合并表
+select * from emp where entry_date=(select min(entry_date) from emp);
+
+-- B. 查询在 "阮小五" 入职之后入职的员工信息
+-- 1.查询"阮小五" 入职的日期
+select entry_date from emp where name='阮小五';
+-- 2.合并表
+select * from emp where entry_date>(select entry_date from emp where name='阮小五');
+
+-- 列子查询
+-- A. 查询 "教研部" 和 "咨询部" 的所有员工信息
+-- 1.查询"教研部" 和 "咨询部"的id (2,3)
+select id from dept where name='教研部' or name='咨询部';
+-- 2.合并
+select * from emp where dept_id in (2,3);
+select * from emp where dept_id in (select id from dept where name='教研部' or name='咨询部');
+-- 行子查询
+-- A. 查询与 "李忠" 的薪资 及 职位都相同的员工信息 ;
+-- 1.查询"李忠" 的薪资 及 职位
+select salary,job from emp where name='李忠';
+-- 2.合并表
+select * from emp where (salary,job)=(select salary,job from emp where name='李忠');
+
+-- 表子查询
+-- A. 查询入职日期是 "2006-01-01" 之后的员工信息 , 及其部门信息
+-- 1.查询入职日期是 "2006-01-01" 之后的员工
+select * from emp where entry_date>'2006-01-01';
+-- 2.将其看作一个临时表
+select * from (select * from emp where entry_date>'2006-01-01') t1,dept t2 where t1.dept_id=t2.id;
+```
+
+
+
+分页查询
+
+分页插件
+
+a.导入依赖 pagehelper-spring-boot-starter 【注意版本问题】
+b.设置分页参数 PageHelper.startPage(page,pageSize);
+c.强转对象List-->Page
+d.封装分页结果对象
+
+PageHelper 实现机制：会拦住请求，对SQL语句进行改进，加入count统计和limit限制
+
+有了PageHelper,sql语句就只用写普通查询
+
+注意事项：
+
+1、**SQL语句结尾不要加分号（;）,因为它直接在后面拼接limit语句会有语法错误**；
+
+2、**PageHepler 只会对设置分页后的第一条SQL语句进行分页处理**
+
+
+
+动态sql 用xml文件开发
+
+当传入的参数过多时，可建一个对象，直接传递一整个对象
+
+在进行模糊匹配时，**#{} 放在引号(“ ”)中就失效了**，此时需要用concat拼接，如concat('%',#{name},'%')
+
+进行条件查询时，**where要转为标签，优化条件内为空的内容**
+
+
+
+### 4、新增员工
+
+需求分析与梳理
+
+![image-20250711220542138](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250711220542138.png)

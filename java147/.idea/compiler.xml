@@ -7,14 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="day04-code" />
-        <module name="springboot-mybatis-quickstart" />
       </profile>
       <profile name="Annotation profile for tlias-web-manager" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$PROJECT_DIR$/../../../repo/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$PROJECT_DIR$/../../../repo/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="tlias-web-manager" />
       </profile>
@@ -28,6 +28,7 @@
       <module name="maven-projectB" target="21" />
       <module name="maven-projectC" target="21" />
       <module name="servlet-deno" target="21" />
+      <module name="springboot-mybatis-quickstart" target="21" />
       <module name="springboot-web-quickstart01" target="21" />
       <module name="springboot-web-quickstart02" target="21" />
     </bytecodeTargetLevel>
