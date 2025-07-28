@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lily.mapper.EmpMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"> /*用了xml开发就不能再通过注解获取主键值*/
+        insert into emp values (null,#{username},#{password},#{name},#{gender},
+        #{phone},#{job},#{salary},#{image},#{entryDate},#{deptId},#{createTime},#{updateTime})
+    </insert>
+    <update id="update">
+        update emp
+        <set>
+            <if test="username!=null and username!=''">
+                username=#{username},
+            </if>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="job!=null and job!=null">
+                job=#{job},
+            </if>
+            <if test="salary!=null">
+                salary=#{salary},
+            </if>
+            <if test="image!=null">
+                image=#{image},
+            </if>
+            <if test="entryDate!=null">
+                entry_date=#{entryDate},
+            </if>
+            <if test="deptId!=null">
+                dept_id=#{deptId},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteBatch">
+        delete from emp where id in
+               <foreach collection="ids" separator="," item="id" open="(" close=")">
+                   #{id}
+               </foreach>
+    </delete>
+
     <select id="list" resultType="com.lily.entity.Emp">
         select e.*,d.name deptName from emp e left join dept d on e.dept_id=d.id
         <where>
@@ -15,5 +65,32 @@
             </if>
         </where>
         order by e.update_time desc
+    </select>
+    <!--resultMap一对多映射-->
+    <!--autoMapping=true 字段一样的自动映射-->
+    <resultMap id="empResultMap" type="com.lily.entity.Emp" autoMapping="true">
+        <id column="id" property="id"></id>
+
+        <!--封装集合-->
+        <collection property="exprList" ofType="com.lily.entity.EmpExpr">
+            <result column="ee_id" property="id"></result>
+            <result column="ee_empid" property="empId"></result>
+            <result column="ee_begin" property="begin"></result>
+            <result column="ee_end" property="end"></result>
+            <result column="ee_company" property="company"></result>
+            <result column="ee_job" property="job"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getById" resultMap="empResultMap">
+        select e.*,ee.id ee_id,ee.emp_id ee_empid,ee.begin ee_begin,ee.end ee_end,
+               ee.company ee_company,ee.job ee_job
+        from emp e left join emp_expr ee on e.id=ee.emp_id where e.id=#{id}
+    </select>
+    <select id="getById2" resultType="com.lily.entity.Emp">
+        select * from emp where id=#{id};
+    </select>
+    <select id="login" resultType="com.lily.entity.Emp">
+        select * from emp where username=#{username} and password=#{password}
     </select>
 </mapper>

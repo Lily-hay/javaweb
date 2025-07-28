@@ -20,8 +20,17 @@ public interface EmpMapper {
 
     List<Emp> list(EmpQueryParam param);
 
-    @Options(useGeneratedKeys = true,keyProperty = "id") //可以获取新生成的id
-    @Insert("insert into emp values (null,#{username},#{password},#{name},#{gender},#{phone},#{job},#{salary},#{image},#{entryDate},#{deptId},#{createTime},#{updateTime})")
+    //@Options(useGeneratedKeys = true,keyProperty = "id") //可以获取新生成的id
+   // @Insert("insert into emp values (null,#{username},#{password},#{name},#{gender},#{phone},#{job},#{salary},#{image},#{entryDate},#{deptId},#{createTime},#{updateTime})")
     void insert(Emp emp);
 
+    void deleteBatch(List<Integer> ids);
+
+    Emp getById(Integer id);
+
+    Emp getById2(Integer id);
+
+    void update(Emp emp);
+
+    Emp login(Emp emp);
 }

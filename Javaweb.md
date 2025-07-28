@@ -1029,7 +1029,7 @@ select * from (select * from emp where entry_date>'2006-01-01') t1,dept t2 where
 
 
 
-分页查询
+#### 分页查询
 
 分页插件
 
@@ -1065,3 +1065,639 @@ PageHelper 实现机制：会拦住请求，对SQL语句进行改进，加入cou
 需求分析与梳理
 
 ![image-20250711220542138](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250711220542138.png)
+
+新增员工经历 有多条
+
+用sql语句forEach遍历，则要用xml开发
+
+```
+<foreach collection="exprList" item="expr" separator=",">
+```
+
+用了xml,新增员工就不能再通过注解@Options获取主键值，要统一用xml
+
+```
+<insert id="insert" useGeneratedKeys="true" keyProperty="id"> /*用了xml开发就不能再通过注解获取主键值*/
+    insert into emp values (null,#{username},#{password},#{name},#{gender},
+    #{phone},#{job},#{salary},#{image},#{entryDate},#{deptId},#{createTime},#{updateTime})
+</insert>
+```
+
+
+
+#### 2、事务管理
+
+**操作同时成功，同时失败**   解决同时新增员工信息和经历不同时成功导致数据不一致的问题
+
+控制事务，场景，银行转账；下单扣减库存  步骤：
+
+1、开启事务 start tansaction/begin
+
+2、提交事务（全部成功）submit     or 回滚事务（只要一项失败）rollback
+
+spring事务管理 @Transactional    可加在业务（Service）的类、方法、接口上
+
+```
+@Transactional(rollbackFor = Exception.class)//开启事务指定处理最大异常，默认只处理RunningTime Exception
+```
+
+**rollbackFor属性，控制事务处理的异常的大小**
+
+事务的传播行为控制：propagation 一个事务方法，调用另一个事务方法时的处理 （加入或新建）
+
+| **属性值**   | **含义**                                     |
+| ------------ | -------------------------------------------- |
+| REQUIRED     | 【默认值】需要事务，有则加入，无则创建新事务 |
+| REQUIRES_NEW | 需要新事务，无论有无，总是创建新事务         |
+
+ REQUIRED大部分场景
+
+REQUIRES_NEW  ：希望两个方法在独立的事务中运行，互不影响，比如打日志
+
+四大特性：原子性：事务是不可分割的最小单元，要么全部成功，要么全部失败
+
+​		  一致性：必须使所有的数据都保持一致状态
+
+​		  隔离性：保证事务在不受外部并发操作影响的独立环境下运行
+
+​		  持久性：一旦提交或回滚，对数据的改变是永久的
+
+
+
+#### 3、文件上传
+
+前端上传的三要素：表单项 type="file"  表单提交方式  post     表单的enctype 属性 multipart/form-data
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    头像: <input type="file" name="file"><br>
+
+服务端对应的配置
+
+本地上传，问题：不能直接访问、磁盘可能会爆满、磁盘损坏
+
+```
+@PostMapping("/upload")
+public Result upload(String username, Integer age, MultipartFile file) throws IOException {
+    log.info("参数：{},{},{}",username, age, file.getOriginalFilename());
+    //1.获取原始文件名
+    String originalFilename = file.getOriginalFilename();
+    //2.用UUID随机生成字符串
+    String fileName= UUID.randomUUID()+originalFilename.substring(originalFilename.lastIndexOf("."));
+    //3.将文件上传到本地
+    file.transferTo(new File("D:/"+fileName));
+    return Result.success(fileName);
+```
+
+上传阿里云
+
+```
+String originalFilename = file.getOriginalFilename();
+log.info("原文件名：{}",originalFilename);
+//2.用UUID随机生成字符串
+String extName= originalFilename.substring(originalFilename.lastIndexOf("."));
+String url = AliyunOSSUtils.upload(endpoint, bucketName, file.getBytes(), extName);
+
+return Result.success(url);
+```
+
+配置endpoint和bucket
+
+配置文件：
+
+```
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    bucket: lily-java147
+```
+
+#### 参数配置化：
+
+1、使用注解注入值：
+
+```
+@Value("${aliyun.oss.endpoint}")
+private String endpoint;
+@Value("${aliyun.oss.bucket}")
+private String bucketName;
+```
+
+2、要是要同时注入多个值，需要写一个配置类将多个属性值批量注入到bean对象中
+
+```
+@Data
+@Component
+@ConfigurationProperties(prefix = "aliyun.oss")
+public class AliOSSProperties {
+    private String endpoint;//名字需要与配置文件相同
+    private String bucket;
+}
+```
+
+sprtingboot支持三种文件配置：
+
+application.properties
+
+application.yaml
+
+application.yml
+
+优先级properties>yml>yaml
+
+yml配置文件推荐，key与值之间加空格
+
+**如果配置项的值是以0开头的，值需要使用' '引起来，因为以零开头的数据在yml中表示8进制的数据**
+
+
+
+### 5、删除员工
+
+接收前端传入的参数多个参数
+
+```
+@DeleteMapping("/emps")
+//传入参数1： 直接用数组接
+//public Result delete(Integer[] ids)
+//传入参数2：用集合来接，方便后续操作
+ public Result delete(@RequestParam List<Integer> ids)
+```
+
+```
+@Transactional
+@Override
+public void delete(List<Integer> ids) {
+    //1.批量删除员工信息
+    empMapper.deleteBatch(ids);
+
+    //2.批量删除员工经历 动态xml forEach
+    empExprMapper.deleteBatch(ids);
+}
+```
+
+
+
+编辑员工
+
+涉及两步操作：
+
+先回显、再修改
+
+回显，方式一，一次性获取所有信息
+
+则sql的类型修改为empResultMap，自定义封装返回结果
+
+```
+public Emp getById(Integer id) {
+    //1.方式一 获取员工信息和员工经历
+   // return empMapper.getById(id);
+    //方式二
+    //1.查询员工基本信息
+    Emp emp=empMapper.getById2(id);
+    //2.查询员工经历
+    List<EmpExpr> exprList=empExprMapper.getEmpbyId(id);
+    emp.setExprList(exprList);
+    return emp;
+}
+```
+
+更新信息
+
+```
+@Transactional
+@Override
+public void update(Emp emp) {
+    //1.更新员工基本信息
+    emp.setUpdateTime(LocalDateTime.now());
+    empMapper.update(emp);
+
+    //2.更新员工经历
+    //1.根据先id删除，再根据新增
+    empExprMapper.delete(emp.getId());
+    List<EmpExpr> empExprList=emp.getExprList();
+    if(!empExprList.isEmpty())//如果集合为空，sql语句会报错
+    {
+        empExprList.forEach((expr)->{
+            expr.setEmpId(emp.getId());
+        });
+        empExprMapper.insertBatch(emp.getExprList());
+    }
+}
+```
+
+
+
+### 6、登录校验
+
+1、会话技术
+
+会话：用户打开浏览器，访问web资源，会话建立，一方断开，会话结束，在一次会话中可包含多次请求和响应
+
+会话跟踪：维护浏览器状态的方法，服务器需要识别多次请求是否来自于同一浏览器，以便在一次会话的请求中**共享数据**
+
+登录校验思路
+
+![image-20250725160807090](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250725160807090.png)
+
+跟踪方案：
+
+1、Cookie
+
+优点：http协议中支持的技术
+
+生成Cookie,自动返回到浏览器（响应 Set-Cookie）、自动存到浏览器、再次请求自动携带Cookie(请求Cookie)
+
+缺点：1、移动端app无法使用Cookie；2、不安全，用户可自己禁用Cookie；3、Cookie不能跨域（协议、IP/域名、端口不一致）
+
+2、Session
+
+底层基于Cookie
+
+优点：存储在服务器，安全
+
+缺点：1、服务器集群环境下无法使用Session;   2、Cookie的缺点
+
+3、令牌技术
+
+优点：1、支持PC端、移动端  2、解决集群环境下的认证问题； 3、减轻服务器的压力
+
+JWT(jsonwebtoken)令牌组成：
+
+第一部分：Header 包含算法签名，令牌类型
+
+第二部分：Payload(有效载荷)  携带有效信息，做登录
+
+第三部分：Signature(签名)  jiangheader,payload融入，并加入指定密钥，通过签名算法计算而来，保证安全性，不被篡改
+
+生成令牌
+
+第一步：注入依赖
+
+```
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+```
+
+第二部
+
+```
+Map<String,Object> claims=new HashMap<>();
+claims.put("id",1);
+claims.put("username","lily");
+String jwt= Jwts.builder()
+        .signWith(SignatureAlgorithm.HS256,"lily")//设置算法签名，密钥
+        .addClaims(claims)//声明有效信息
+        .setExpiration(new Date(System.currentTimeMillis()+12*3600*1000))//设置有效时间
+        .compact();//收集
+```
+
+令牌解析
+
+```
+Claims claims=Jwts.parser().setSigningKey("lily")
+        .parseClaimsJws("eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJsaWx5IiwiZXhwIjoxNzUzNDgwNDAwfQ.hJ7CeGI2aQUwVsqgZfKKHPxKfzi9rDf7rs0x3VtiDb8")
+        .getBody();
+```
+
+令牌解析失败的原因：1、令牌改动   2、令牌失效
+
+注意事项：**JWT校验时使用的签名密钥与生成时的要相同**
+
+
+
+过滤器（Filter）
+
+javaweb三大组件（Servlet、Filter、Listener）之一
+
+把对资源的请求拦截下来，完成一些特殊功能，比如登录校验、统一编码处理、敏感字符处理等
+
+步骤：1、定义一个实现类实现Filter接口
+
+​	    2、配置，在该类上添加注解@WebFilter(urlPatterns="/*") 设置请求路径，在启动类上加上注解@ServletComponentScan扫描Servlet组件
+
+注意事项：**如果过滤器不执行放行操作，过滤器拦截之后，就不会访问对应的资源**
+
+```
+@WebFilter(urlPatterns = "/*")//表示拦截所有请求
+public class FilterDemo implements Filter {
+    @Override
+    //初始化方法，在web服务器启动时触发一次
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("FilterDemo init----------");
+    }
+
+    //每次拦截到请求就会触发该方法，会调用多次
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        log.info("FilterDemo doFilter-----------");
+        filterChain.doFilter(servletRequest,servletResponse);//放行
+    }
+    //销毁方法，在web服务器正常关闭时触发一次
+    @Override
+    public void destroy() {
+        log.info("FilterDemo destroy----------");
+    }
+}
+```
+
+过滤器执行过程：放行前->放行->目标资源->放行后
+
+配置拦截路径：/*  拦截所有 /emps/* 拦截目录 
+
+过滤器链：一个项目中有多个过滤器，默认按照过滤器字母顺序执行
+
+<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250726140440557.png" alt="image-20250726140440557" style="zoom: 50%;" />
+
+拦截器
+
+1、先建一个Interceptor类实现HandlerInterceptor 接口，实现里面的方法
+
+```
+@Component
+public class DemoInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("DemoInterceptor preHandle");
+        return true;//表示放行
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        log.info("DemoInterceptor postHandle");
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        log.info("DemoInterceptor afterCompletion");
+    }
+}
+```
+
+2、写一个配置类，继承WebMvcConfigurer
+
+```
+@Configuration//声明当前类为配置类
+public class WebConfig implements WebMvcConfigurer {
+    @Autowired
+    private DemoInterceptor demoInterceptor;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        log.info("拦截器");
+        registry.addInterceptor(demoInterceptor).addPathPatterns("/**");
+    }
+}
+```
+
+![拦截器](E:\javaprojects\javaweb\笔记图片\拦截器.png)
+
+拦截路径设置：
+
+/*表示一级路径     /**  全部路径
+
+Filter与Interceptor的区别：
+
+1、接口规范不同：过滤器要实现Filter接口，而拦截器实现HandlerInterceptor接口
+
+2、拦截范围不同：Filter会拦截所有资源，而Interceptor只会拦截Spring环境中的资源
+
+
+
+### 7、AOP
+
+Aspect Oriented Programming面向（切面）特定方法编程
+
+场景:案例中部分接口方法运行较慢，定位执行耗时较长的接口，此时需要统计每一个接口方法的实行的耗时
+
+优势：1、减少重复代码；2、代码无侵入；3、提高开发效率；4、维护方便
+
+引入依赖
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+SpringAOP应用场景：
+
+1、记录系统日志；2、权限控制；3、事务管理
+
+目标对象，在管理bean对象的过程中，主要通过底层的**动态代理机制**，对特定的方法进行编程
+
+连接点：可以被AOP控制的方法
+
+切入点：匹配连接点条件，通知仅会在切入点方法执行时被应用
+
+```
+@Aspect//声明切面类
+@Component
+public class RecordTimeAspect {
+//通知
+    @Around("execution(* com.itheima.service.impl.DeptServiceImpl.*(..))") //.*连接点，即可以被调用的方法
+    public Object recordTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+        long end = System.currentTimeMillis();
+        log.info("执行时间：{}", end - start);
+        return result;
+    }
+}
+```
+
+通知（将共性逻辑抽取成一个方法）
+
+@Around 环绕通知
+
+@Before 前置通知
+
+@After 后置通知
+
+@AfterReturning  正常返回时触发
+
+@AfterThrowing 出异常时触发
+
+
+
+@PointCut注解  抽取公共表达式，提高复用性
+
+```
+@Pointcut("execution(* com.itheima.service.impl.DeptServiceImpl.*(..))")
+public void pt(){}
+@Around("pt()")
+```
+
+
+
+#### 通知顺序
+
+当有多个切面的切面点匹配到目标方法，多个通知方法都会被执行
+
+1、不同切面类中，按照切面类的字母排序：
+
+目标方法前的通知方法：字母靠前的排前
+
+目标方法后的通知方法：字母靠后的排前
+
+2、用@Order(数字)加在切面类上来控制顺序，数字越小的排在前面
+
+
+
+#### 切入点表达式
+
+1、根据方法签名来匹配 execution(访问修饰符？ 返回值 包名.类名.？方法名 throws 异常？)
+
+？前的可省略
+
+通配符：*可匹配任意一级   ..可匹配任意多级
+
+当方法名没有共同点时，可用连接符
+
+```
+@Pointcut("execution(* com.itheima.service.impl.DeptServiceImpl.list(..)) || execution(* com.itheima.service.impl.DeptServiceImpl.getById(..))")
+```
+
+书写建议
+
+1.所有业务业务方法名在**命名时尽量规范**  2.切入点方法**通常基于接口描述**，而不是直接描述实现类，**增强拓展性**
+
+3.在满足业务需求时，**尽量缩小切入点的匹配范围**
+
+
+
+2、根据@annotation切入表达式
+
+步骤：定义一个注解类，在需要的方法上打上注解
+
+@annotation(注解全类名)
+
+execution切入点表达式与annotation表达式应用场景：
+
+* 如果execution切入点表达式方便描述指定的方法，就用
+
+
+
+连接点
+
+可获取方法执行时的相关信息，如方法名、类名、方法参数等
+
+对于@Around通知，获取连接点信息只能用ProceedingJoinPoint
+
+而其他四种只能用JoinPoint,是ProceedingJoinPoint的父类型
+
+```
+public void before(JoinPoint joinPoint) {
+    //获取类名
+    String className = joinPoint.getTarget().getClass().getName();
+    System.out.println("className = " + className);
+    //获取方法签名
+    Signature signature = joinPoint.getSignature();
+    System.out.println("signature = " + signature);
+    //获取方法名
+    String methodName = joinPoint.getSignature().getName();
+    System.out.println("methodName = " + methodName);
+    //获取方法参数
+    Object[] args = joinPoint.getArgs();
+    System.out.println("args = " + Arrays.toString(args));
+```
+
+
+
+### 8、SpringBoot原理
+
+1、属性配置
+
+SpringBoot除了支持配置文件属性配置，还支持**Java系统属性**和**命令行参数**的方式进行属性配置
+
+如-Dserver.port=9090   --Server.port=10010
+
+![系统配置](E:\javaprojects\javaweb\笔记图片\系统配置.png)
+
+优先级 --Server.port>-Dserver.port>配置文件里的
+
+配置这两个属性之后，可以在打包后在运行时在命令行窗口直接改端口
+
+java -Dserver.port=9090 -jar 包 --Server.port=10010
+
+若运行时出行**没有主清单属性**，则是**没有引入打包插件依赖**
+
+
+
+2、Bean对象
+
+```
+ @Autowired
+    private ApplicationContext context;
+    //获取bean对象
+    @Test
+    public void testGetBean(){
+        //根据bean的名称获取
+        DeptController bean1 = (DeptController) context.getBean("deptController");
+        System.out.println("bean1 = " + bean1);
+        //根据bean的类型获取
+        DeptController bean2 = context.getBean(DeptController.class);
+        System.out.println("bean2 = " + bean2);
+        //根据bean的名称 及 类型获取
+        DeptController bean3 = context.getBean("deptController", DeptController.class);
+        System.out.println("bean3 = " + bean3);
+    }
+```
+
+
+
+3、bean作用域
+
+常见作用域单例 singleton(默认)    非单例prototype  bean对象无法初始化，会在启动后创建；会有多个bean对象
+
+设置bean的作用域 ：使用@Scope("singleton")注解
+
+默认单例的bean在容器启动时被创建
+
+@Lazy可以延迟bean对象的初始化，本来在启动过程中加载的会在启动后加载，可加快启动速度
+
+
+
+4、循环依赖
+
+A类在加载时检测到依赖注入时先加载B类，而B类也依赖注入了A类，就会倒是循环依赖，导致启动失败
+
+解决办法：1.在任意一个类中加上@Lazy，延迟另一个类的加载   2.在配置文件中设置
+
+```
+spring:
+	main:
+    	allow-circular-references:true
+```
+
+
+
+5、第三方bean
+
+@Bean声明第三方bean,只作用于方法上，不推荐直接写到启动类里，重新写一个配置类
+
+```
+@Configuration//声明是配置类
+public class CommonConfig {
+    @Bean("SAXReader")   //作用：程序启动时，会执行该方法，并将方法的返回值对象交由IOC容器管理
+    //bean的名字默认是方法名，可以通过name/value属性改名字
+    public SAXReader saxReader(ServiceB serviceB) {
+        return new SAXReader();
+    }
+}
+```
+
+
+
+6、SpringBoot原理（简单快捷）
+
+起步依赖：引入该依赖代表了多个依赖，原理，依赖传递
+
+自动配置
+
+方案一：
+
+引入依赖后，在启动类上加@@ComponentScan({"com.example","com.itheima"})，扫描到该类
+
+方案二：@Import导入
