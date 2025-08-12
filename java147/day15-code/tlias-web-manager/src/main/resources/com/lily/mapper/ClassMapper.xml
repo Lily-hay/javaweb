@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lily.mapper.ClassMapper">
+    <insert id="save">
+        insert into clazz values(null,#{name},#{room},#{beginDate},#{endDate},#{masterId},#{subject},#{createTime},#{updateTime})
+
+    </insert>
+    <update id="update">
+        update clazz
+        <set>
+            <if test="name != null and name != ''">
+                name=#{name},
+            </if>
+            <if test="room !=null and room != ''">
+                room=#{room},
+            </if>
+            <if test="beginDate!=null">
+                begin_date=#{beginDate},
+            </if>
+            <if test="endDate != null">
+                end_date=#{endDate},
+            </if>
+            <if test="masterId != null">
+                master_id=#{masterId},
+            </if>
+            <if test="subject !=null and subject!= ''">
+                subject=#{subject},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="delete">
+        <if test="student.clazz_id != #{id}">
+            delete from clazz c where c.id=#{id}
+        </if>
+
+
+    </delete>
+    <select id="page" resultType="com.lily.entity.Clazz">
+        select * from clazz
+        <where>
+            <if test="name!=null and name!=''">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="begin !=null and end != null">
+               and begin_date like #{begin} and end_date like #{end}
+            </if>
+        </where>
+    </select>
+    <select id="Count" resultType="com.lily.entity.StuCount">
+        select c.name,count(*) data from clazz c,student where c.id = student.clazz_id group by clazz_id ;
+    </select>
+</mapper>

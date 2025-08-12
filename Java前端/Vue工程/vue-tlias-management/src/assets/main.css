@@ -1,0 +1,20 @@
+*{
+    margin:0px;
+}
+.header{
+    background-image: linear-gradient(to right, #ab3acf, #b256cd, #b76eca, #bb84c8, #be99c5);;
+    line-height: 60px;
+}
+.title{
+    
+    font-size: 40px;
+    color: aliceblue;  
+    font-family: 楷体;
+}
+.right_tool{
+    float:right;
+}
+a{
+    text-decoration: none;
+    color: aliceblue;    
+}

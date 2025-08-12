@@ -1,5 +1,8 @@
 package com.itheima;
 
+import com.example.HeaderGenerator;
+import com.example.HeaderParser;
+import com.example.MyImportSelector;
 import org.apache.http.message.TokenParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,19 @@ public class TestAutoConfig {
     private ApplicationContext context;
 
     @Test
-    public void testAutoConfig() {
-        TokenParser bean = context.getBean(TokenParser.class);
-        System.out.println("bean = " + bean);
+    public void testTokenParser() {
+        TokenParser tokenParser = context.getBean(TokenParser.class);
+        System.out.println("tokenParser = " + tokenParser);
     }
+    @Test
+    public void testHeaderGenerator() {
+        HeaderGenerator headerGenerator = context.getBean(HeaderGenerator.class);
+        System.out.println("headerGenerator = " + headerGenerator);
+    }
+    @Test
+    public void testHeaderParser() {
+        HeaderParser headerParser = context.getBean(HeaderParser.class);
+        System.out.println("headerParser = " + headerParser);
+    }
+
 }

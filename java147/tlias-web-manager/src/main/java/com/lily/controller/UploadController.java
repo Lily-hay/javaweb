@@ -1,6 +1,6 @@
 package com.lily.controller;
 
-import com.lily.entity.AliOSSProperties;
+import com.lily.utils.AliOSSProperties;
 import com.lily.entity.Result;
 import com.lily.utils.AliyunOSSUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 @RestController
 @Slf4j

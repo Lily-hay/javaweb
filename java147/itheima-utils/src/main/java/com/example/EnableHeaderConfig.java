@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(MyImportSelector.class)
-public @interface EnableHeaderConfig {
+@interface EnableHeaderConfig {
 }

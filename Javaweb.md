@@ -1367,7 +1367,7 @@ Claims claims=Jwts.parser().setSigningKey("lily")
 
 
 
-过滤器（Filter）
+#### 过滤器（Filter）
 
 javaweb三大组件（Servlet、Filter、Listener）之一
 
@@ -1410,7 +1410,7 @@ public class FilterDemo implements Filter {
 
 <img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250726140440557.png" alt="image-20250726140440557" style="zoom: 50%;" />
 
-拦截器
+#### 拦截器
 
 1、先建一个Interceptor类实现HandlerInterceptor 接口，实现里面的方法
 
@@ -1701,3 +1701,119 @@ public class CommonConfig {
 引入依赖后，在启动类上加@@ComponentScan({"com.example","com.itheima"})，扫描到该类
 
 方案二：@Import导入
+
+```
+//@EnableHeaderConfig//封装import注解
+//@Import(MyImportSelector.class)//导入接口实现类
+//@Import(HeaderConfig.class)//导入配置类
+//@Import({HeaderGenerator.class, HeaderParser.class})//导入普通类
+//@Import(TokenParser.class)
+```
+
+接口实现类
+
+```
+public class MyImportSelector implements ImportSelector {
+    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+        return new String[]{"com.example.HeaderConfig"};
+    }
+}
+```
+
+封装注解
+
+```
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Import(MyImportSelector.class)
+@interface EnableHeaderConfig {
+}
+```
+
+
+
+自动配置-源码跟踪
+
+启动类上的注解@SpringBootApplication包含了三个部分：
+
+1.@SpringBootConfiguration 与@Configuration注解相同，用来声明当前类是一个配置类
+
+2.@ComponentScan组件扫描，默认扫描当前引导类所在包及其子包
+
+3.@EnableAutoConfiguration 	开启自动配置，SpringBoot实现自动化配置的核心注解
+
+自动配置原理：.@EnableAutoConfiguration 开启自动配置，下面有一个Import注解，该注解会加载META-INF下spring下面一个自动配置类的文件，存了配置文件的全类名，有一百多个配置类，会加载到方法中返回，再经过一系列的过滤，排除重复的，再加上一些条件判断，最终将留下的配置类全部注册为IOC容器的bean
+
+启动时就自动配置了，但并不是全都使用，要满足条件
+
+@Conditional及其衍生注解，满足给定条件后，注册对应的bean对象到Spring IOC容器中，可作用于方法上、类上
+
+@ConditionalOnClass()  当前环境存在这个类是，才声明该bean
+
+@ConditionalOnMissingBean  当不存在当前类型的bean时，才声明该bean
+
+@ConditionalOnProperty(name=,havingValue=)当配置文件中存在对应的属性和值时，才注册到bean容器中
+
+### 9、Maven高级
+
+1、分模块设计
+
+将项目按照供能拆分为若干个子模块，方便项目的管理维护、扩展，也方便模块间的互相调用，资源共享
+
+2、继承
+
+子工程可以继承父工程的配置信息，常见于依赖关系的继承，可简化依赖配置、统一管理依赖
+
+<parent>...</parent>
+
+步骤：
+
+1、创建父工程，设置打包方式为pom，并继承spring-boot-starter-parent
+
+2、在子工程中配置继承关系
+
+3、在父工程中配置各工程共有依赖，解决重复问题
+
+在子工程中，配置继承关系后，坐标中的groupId可省，自动继承父工程的
+
+relativePath指定父工程的相对位置，若父子工程配置类同一依赖的不同版本，以子工程为准
+
+```
+<parent>
+    <groupId>com.lily</groupId>
+    <artifactId>tlias-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../tlias-parent</relativePath>
+</parent>
+```
+
+
+
+3、版本锁定
+
+依赖管理，只做管理，不做依赖，在父工程中通过<dependencyManagement>进行管理，解决部分子工程的版本管理，子工程不需要再写版本号，而没有该依赖的子工程依赖也不会增加
+
+
+
+4、聚合
+
+将多个模块组成一个整体，同时进行项目的构建
+
+聚合工程会将子工程放到聚合工程之下，进行统一的项目构建，一般在父工程下进行聚合
+
+```
+<modules>
+    <module>../tlias-pojo</module>
+    <module>../tlias-utils</module>
+    <module>../tlias-web-manager</module>
+</modules>
+```
+
+继承与聚合的联系与区别？
+
+联系：继承与聚合都属于设计型模块，打包方式都是pom，是在子工程下配置继承关系
+
+区别：1、继承用于简化依赖配置、统一管理版本依赖，在子工程配置继承关系
+
+​	     2、聚合用于快速构建项目，在父工程下配置聚合模块
+

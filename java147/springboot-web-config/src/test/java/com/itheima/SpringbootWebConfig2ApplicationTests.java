@@ -65,4 +65,5 @@ class SpringbootWebConfig2ApplicationTests {
         System.out.println("bean1 = " + bean1);
     }
 
+
 }

@@ -95,6 +95,7 @@
             <groupId>com.example</groupId>
             <artifactId>itheima-utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

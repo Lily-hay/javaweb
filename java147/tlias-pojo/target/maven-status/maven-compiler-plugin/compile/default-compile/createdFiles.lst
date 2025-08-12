@@ -1,0 +1,15 @@
+com\lily\entity\EmpLog.class
+com\lily\entity\EmpLoginInfo.class
+com\lily\entity\Dept.class
+com\lily\entity\Student.class
+com\lily\entity\CountList.class
+com\lily\entity\StuCount.class
+com\lily\entity\EmpExpr.class
+com\lily\entity\PageBean.class
+com\lily\entity\StuQueryParam.class
+com\lily\entity\Result.class
+com\lily\entity\Clazz.class
+com\lily\entity\Degree.class
+com\lily\entity\ClassQueryParam.class
+com\lily\entity\Emp.class
+com\lily\entity\EmpQueryParam.class

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lily.mapper.EmpExprMapper">
+
+    <insert id="insertBatch">
+        insert into emp_expr values
+        <foreach collection="exprList" item="expr" separator=",">
+            (null,#{expr.empId},#{expr.begin},#{expr.end},#{expr.company},#{expr.job})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch">
+        delete from emp_expr where emp_id in
+               <foreach collection="empIds" separator="," item="empId" open="(" close=")">
+                   #{empId}
+               </foreach>
+    </delete>
+    <delete id="delete">
+        delete from emp_expr where emp_id=#{id}
+    </delete>
+    <select id="getEmpbyId" resultType="com.lily.entity.EmpExpr">
+        select * from emp_expr where emp_id=#{empId}
+    </select>
+</mapper>

@@ -8,10 +8,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="springboot-web-config" />
         <module name="springboot-aop-quickstart" />
+        <module name="tlias-utils" />
         <module name="day04-code" />
         <module name="itheima-utils" />
+        <module name="tlias-pojo" />
       </profile>
-      <profile name="Annotation profile for tlias-web-manager" enabled="true">
+      <profile name="Annotation profile for tlias-parent" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -41,6 +43,8 @@
       <module name="springboot-mybatis-quickstart" options="-parameters" />
       <module name="springboot-web-config" options="-parameters" />
       <module name="springboot-web-quickstart01" options="-parameters" />
+      <module name="tlias-pojo" options="-parameters" />
+      <module name="tlias-utils" options="-parameters" />
       <module name="tlias-web-manager" options="-parameters" />
     </option>
   </component>
